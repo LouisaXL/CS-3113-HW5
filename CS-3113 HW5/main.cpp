@@ -44,6 +44,7 @@ NOTE FOR SELF FOR NEXT ASSIGNMENT:
 #include "Scene.h"
 #include "LevelA.h"
 #include "LevelB.h"
+#include "LevelC.h"
 #include "LevelStart.h"
 
 
@@ -96,8 +97,9 @@ Scene* g_current_scene;
 LevelStart* g_level_start;
 LevelA* g_level_a;
 LevelB* g_level_b;
+LevelC* g_level_c;
 
-Scene* g_levels[2];
+Scene* g_levels[4];
 
 SDL_Window* g_display_window;
 
@@ -114,15 +116,9 @@ float g_accumulator = 0.0f;
 //constexpr int FONTBANK_SIZE = 16;
 
 
-
-
-
 // Audio
 //Mix_Music* g_music;
 //Mix_Chunk* g_bouncing_sfx;
-
-
-
 
 
 // ———— GENERAL FUNCTIONS ———— //
@@ -132,6 +128,7 @@ void process_input();
 void update();
 void render();
 void shutdown();
+
 
 void switch_to_scene(Scene* scene)
 {
@@ -182,10 +179,12 @@ void initialise()
     g_level_start = new LevelStart();
     g_level_a = new LevelA();
     g_level_b = new LevelB();
+    g_level_c = new LevelC();
 
-    //g_levels[0] = g_level_start;
-    g_levels[0] = g_level_a;
-    g_levels[1] = g_level_b;
+    g_levels[0] = g_level_start;
+    g_levels[1] = g_level_a;
+    g_levels[2] = g_level_b;
+    g_levels[3] = g_level_c;
 
     switch_to_scene(g_levels[0]);
 
@@ -233,8 +232,9 @@ void process_input()
             //    break;
 
             case SDLK_RETURN:
-                if (g_current_scene == g_level_start) {
-                    switch_to_scene(g_level_a);
+                if (g_current_scene == g_levels[0]) {
+                    // increase after checking current level
+                    g_current_scene->update(-1);
                 }
 
                 break;
@@ -298,7 +298,7 @@ void update()
 
 
     // ————— PLAYER CAMERA ————— //
-    //     // Prevent the camera from showing anything outside of the "edge" of the level
+//     // Prevent the camera from showing anything outside of the "edge" of the level
     g_view_matrix = glm::mat4(1.0f);
 
     if (g_current_scene->get_state().player->get_position().x > LEVEL1_LEFT_EDGE) {
@@ -308,10 +308,13 @@ void update()
         g_view_matrix = glm::translate(g_view_matrix, glm::vec3(-5, 1.0, 0));
     }
 
-    if (g_current_scene == g_level_a && g_current_scene->get_state().player->get_enemy_hit() == true) {
-        switch_to_scene(g_level_b);
-        g_current_scene->get_state().player->set_enemy_hit_false();
-    }
+   
+    
+
+    //if (g_current_scene == g_level_a && g_current_scene->get_state().player->get_enemy_hit() == true) {
+    //    switch_to_scene(g_level_b);
+    //    g_current_scene->get_state().player->set_enemy_hit_false();
+    //}
     
 
     //g_view_matrix = glm::mat4(1.0f);
@@ -349,8 +352,9 @@ void shutdown()
     SDL_Quit();
 
     // ————— DELETING LEVEL DATA (i.e. map, character, enemies...) ————— //
+    delete g_level_start;
     delete g_level_a;
-    delete g_level_b;
+    //delete g_level_b;
 }
 
 // ––––– GAME LOOP ––––– //
@@ -362,7 +366,11 @@ int main(int argc, char* argv[])
     {
         process_input();
         update();
-        if (g_current_scene->get_state().next_scene_id >= 0) switch_to_scene(g_levels[g_current_scene->get_state().next_scene_id]);
+        if (g_current_scene->get_state().next_scene_id >= 0) {
+            switch_to_scene(g_levels[g_current_scene->get_state().next_scene_id]);
+        
+
+        }
         render();
     }
 

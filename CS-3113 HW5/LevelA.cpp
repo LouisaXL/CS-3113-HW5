@@ -56,6 +56,9 @@ LevelA::~LevelA()
 
 void LevelA::initialise()
 {
+
+    m_game_state.next_scene_id = -1;
+
     GLuint map_texture_id = Utility::load_texture("assets/tileset.png");
     m_game_state.map = new Map(LEVEL_WIDTH, LEVEL_HEIGHT, LEVEL_1_DATA, map_texture_id, 1.0f, 4, 1);
 
@@ -85,12 +88,12 @@ void LevelA::initialise()
         0,                         // current animation index
         4,                         // animation column amount
         4,                         // animation row amount
-        0.6f,                      // width
+        0.7f,                      // width
         0.7f,                       // height
         PLAYER
     );
 
-    m_game_state.player->set_position(glm::vec3(3.0f, 0.0f, 0.0f));
+    m_game_state.player->set_position(glm::vec3(5.0f, 2.0f, 0.0f));
 
     // Jumping
     m_game_state.player->set_jumping_power(5.0f);
@@ -144,30 +147,36 @@ void LevelA::update(float delta_time)
     m_game_state.player->check_player_hit(m_game_state.enemies, ENEMY_COUNT);
 
     if (m_game_state.player->get_is_hit() == true) {
+        // is hit
         if (m_game_state.player->get_lives() == 0) {
             // no lives, game over
             m_game_state.player->deactivate();
         }
         else if (m_game_state.player->get_lives() != 0) {
             m_game_state.player->decrease_lives();                          // decrease one life
-            m_game_state.player->set_position(glm::vec3(5.0f, 0.0f, 0.0f)); // reset position
+            m_game_state.player->set_position(glm::vec3(5.0f, 2.0f, 0.0f)); // reset position
         }
         m_game_state.player->set_is_hit_false();
     }
 
     if (m_game_state.player->get_position().y < -5.0) {
-        
+        // if fall off map
         if (m_game_state.player->get_lives() == 0) {
             // no lives, game over
             m_game_state.player->deactivate();
         }
         else if (m_game_state.player->get_lives() != 0) {
             m_game_state.player->decrease_lives();                          // decrease one life
-            m_game_state.player->set_position(glm::vec3(5.0f, 0.0f, 0.0f)); // reset position
+            m_game_state.player->set_position(glm::vec3(5.0f, 2.0f, 0.0f)); // reset position
         }
     }
 
-    if (m_game_state.enemies->get_is_active() == false && ENEMY_COUNT != 0) m_game_state.next_scene_id = 1;
+    // CHANGE TO NEXT SCENE 
+    if (m_game_state.enemies[0].get_is_active() == false && ENEMY_COUNT != 0) {
+        // if eliminate all enimies
+        m_game_state.next_scene_id = 2; 
+        //m_game_state.player->set_position(glm::vec3(5.0f, 2.0f, 0.0f)); // reset position
+    }
 }
 
 

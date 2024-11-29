@@ -43,7 +43,7 @@ protected:
 
 public:
     // ————— ATTRIBUTES ————— //
-    int m_number_of_enemies = 1;    // never used
+    int m_number_of_enemies = 2;    // never used
     //int m_number_of_lives = 3;
 
     // ————— METHODS ————— //
@@ -52,6 +52,16 @@ public:
     virtual void render(ShaderProgram* program) = 0;
 
     //void const decrease_number_of_lives() { m_number_of_lives--; }
+
+    void inc_scene() {
+        // increase screne id
+        m_game_state.next_scene_id += 1;
+        
+    }
+
+    void set_scene_id(int amt) {
+        m_game_state.next_scene_id = amt;
+    }
 
     // ————— GETTERS ————— //
     GameState const get_state() const { return m_game_state; }

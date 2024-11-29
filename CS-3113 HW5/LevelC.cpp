@@ -1,4 +1,4 @@
-#include "LevelB.h"
+#include "LevelC.h"
 #include "Utility.h"
 
 #define LEVEL_WIDTH 14
@@ -22,11 +22,11 @@ WORD_FILEPATH[] = "assets/words.png";
 //                JUMP_SFX_FILEPATH[] = "assets/jump.mp3";
 // constexpr int  LOOP_FOREVER = -1;  // -1 means loop forever in Mix_PlayMusic; 0 means play once and loop zero times
 
-unsigned int LEVEL_2_DATA[] =
+unsigned int LEVEL_3_DATA[] =
 {
-    3, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0,
+    3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
     2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
 };
@@ -43,7 +43,7 @@ unsigned int LEVEL_2_DATA[] =
 //    3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
 //};
 
-LevelB::~LevelB()
+LevelC::~LevelC()
 {
     delete[] m_game_state.enemies;
     delete    m_game_state.player;
@@ -54,13 +54,13 @@ LevelB::~LevelB()
 
 
 
-void LevelB::initialise()
+void LevelC::initialise()
 {
 
     m_game_state.next_scene_id = -1;
 
     GLuint map_texture_id = Utility::load_texture("assets/tileset.png");
-    m_game_state.map = new Map(LEVEL_WIDTH, LEVEL_HEIGHT, LEVEL_2_DATA, map_texture_id, 1.0f, 4, 1);
+    m_game_state.map = new Map(LEVEL_WIDTH, LEVEL_HEIGHT, LEVEL_3_DATA, map_texture_id, 1.0f, 4, 1);
 
 
     // ————— PLAYER ————— //
@@ -132,7 +132,7 @@ void LevelB::initialise()
 }
 
 
-void LevelB::update(float delta_time)
+void LevelC::update(float delta_time)
 {
 
     m_game_state.player->update(delta_time, m_game_state.player, m_game_state.enemies, ENEMY_COUNT, m_game_state.map);
@@ -172,14 +172,14 @@ void LevelB::update(float delta_time)
     }
 
     // CHANGE TO NEXT SCENE
-    if (m_game_state.enemies[0].get_is_active() == false && ENEMY_COUNT != 0) {
-        m_game_state.next_scene_id = 3;
-        
-    }
+    //if (m_game_state.enemies[0].get_is_active() == false && ENEMY_COUNT != 0) {
+    //    // m_game_state.next_scene_id = 2;
+    //    m_game_state.player->set_position(glm::vec3(5.0f, 2.0f, 0.0f)); // reset position
+    //}
 }
 
 
-void LevelB::render(ShaderProgram* g_shader_program)
+void LevelC::render(ShaderProgram* g_shader_program)
 {
     GLuint g_font_texture_id = Utility::load_texture(WORD_FILEPATH);
     m_game_state.map->render(g_shader_program);
@@ -193,8 +193,8 @@ void LevelB::render(ShaderProgram* g_shader_program)
     }
     // TODO: ADD THE BELOW TO THE LAST LEVEL
     // 
-    //if (m_game_state.enemies->get_is_active() == false && ENEMY_COUNT != 0) {
-    //    Utility::draw_text(g_shader_program, g_font_texture_id, "WIN", 0.5f, 0.05f,
-    //        glm::vec3(5.0f, 1.0f, 0.0f));
-    //}
+    if (m_game_state.enemies->get_is_active() == false && ENEMY_COUNT != 0) {
+        Utility::draw_text(g_shader_program, g_font_texture_id, "WIN", 0.5f, 0.05f,
+            glm::vec3(5.0f, 1.0f, 0.0f));
+    }
 }

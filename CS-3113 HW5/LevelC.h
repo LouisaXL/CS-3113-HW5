@@ -1,13 +1,13 @@
 #pragma once
 #include "Scene.h"
 
-class LevelA : public Scene {
+class LevelC : public Scene {
 public:
     // ————— STATIC ATTRIBUTES ————— //
     int ENEMY_COUNT = 1;
 
     // ————— DESTRUCTOR ————— //
-    ~LevelA();
+    ~LevelC();
 
     // ————— METHODS ————— //
     void initialise() override;
